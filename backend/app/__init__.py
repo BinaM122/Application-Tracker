@@ -8,11 +8,15 @@ from firebase_admin import credentials
 
 load_dotenv(Path(__file__).parent.parent/'.env')
 
+
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
     db.init_app(app)
-    
+    cred_path = Path(__file__).parent.parent/os.environ.get('FIREBASE_CREDENTIALS')
+    cred = credentials.Certificate(cred_path)
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app(cred)
     with app.app_context():
         from .models import user, application
         print("creating tables")
