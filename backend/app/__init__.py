@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 import firebase_admin
 from firebase_admin import credentials
+from .routes.applications import applications_bp
 
 load_dotenv(Path(__file__).parent.parent/'.env')
 
@@ -22,6 +23,8 @@ def create_app():
         print("creating tables")
         db.create_all()
         print("tables created!")
+        app.register_blueprint(applications_bp)
+
     @app.route('/test')
     def test():
         return 'Hello World' 
