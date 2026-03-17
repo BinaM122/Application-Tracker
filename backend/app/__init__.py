@@ -6,6 +6,7 @@ from pathlib import Path
 import firebase_admin
 from firebase_admin import credentials
 from .routes.applications import applications_bp
+from flask_cors import CORS
 
 load_dotenv(Path(__file__).parent.parent/'.env')
 
@@ -13,6 +14,7 @@ load_dotenv(Path(__file__).parent.parent/'.env')
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+    CORS(app)
     db.init_app(app)
     cred_path = Path(__file__).parent.parent/os.environ.get('FIREBASE_CREDENTIALS')
     cred = credentials.Certificate(cred_path)
