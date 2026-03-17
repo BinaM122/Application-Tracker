@@ -23,7 +23,7 @@ def create_app():
         print("creating tables")
         db.create_all()
         print("tables created!")
-        app.register_blueprint(applications_bp)
+    app.register_blueprint(applications_bp)
 
     @app.route('/test')
     def test():
