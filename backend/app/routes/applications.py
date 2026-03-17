@@ -7,9 +7,8 @@ from datetime import date
 
 applications_bp = Blueprint('applications', __name__,url_prefix='/api/applications')
 @applications_bp.route('/', methods=['POST'])
-#@token_required
-def create_application():
-    uid="test uid"
+@token_required
+def create_application(uid):
 
     data = request.get_json()
     uidcode = nanoid.generate(size=21)
@@ -19,8 +18,8 @@ def create_application():
     return jsonify(new_application.to_dict()),201
 
 @applications_bp.route('/',methods=['GET'])
-def get_application():
-    uid = "test uid"
+@token_required
+def get_application(uid):
     applications = Application.query.filter_by(userid=uid).all()
     applications_list = [item.to_dict() for item in applications]
 
@@ -28,20 +27,19 @@ def get_application():
     return jsonify(applications_list),200
 
 @applications_bp.route('/<id>',methods=['GET'])
-def get_application_single(id):
+@token_required
+def get_application_single(uid, id):
     application = db.session.get(Application, id)
     if not application:
         return jsonify({'error': 'not found'}), 404
-    uid = "test uid"
-    db.session.get(Application, id)
     return jsonify(application.to_dict()),200
 
 @applications_bp.route('/<id>',methods=['PATCH'])
-def edit_application(id):
+@token_required
+def edit_application(uid, id):
     application = db.session.get(Application, id)
     if not application:
         return jsonify({'error': 'not found'}), 404
-    uid = "test uid"
     data = request.get_json()
     application.company = data.get('company', application.company)
     application.title = data.get('title', application.title)
@@ -59,11 +57,11 @@ def edit_application(id):
     return jsonify(application.to_dict()),200
 
 @applications_bp.route('/<id>',methods=['DELETE'])
-def remove_application(id):
+@token_required
+def remove_application(uid, id):
     application = db.session.get(Application, id)
     if not application:
         return jsonify({'error': 'not found'}), 404
-    uid = "test uid"
     db.session.delete(application)
     db.session.commit()
 
