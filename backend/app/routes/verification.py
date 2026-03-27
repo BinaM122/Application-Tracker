@@ -25,6 +25,6 @@ def verify_token_and_get_uid(id_token):
         uid = decoded_token['uid']
         logging.info(f"Successfully verified token for user: {uid}")
         return uid
-    except auth.FirebaseAuthError as e:
+    except Exception as e:
         logging.error(f"Error verifying Firebase ID token: {e}")
         return None
