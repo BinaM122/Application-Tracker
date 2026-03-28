@@ -12,7 +12,8 @@ def create_application(uid):
 
     data = request.get_json()
     uidcode = nanoid.generate(size=21)
-    new_application = Application(id=uidcode,userid=uid,company=data['company'],title=data['title'],location=data['location'],pay=data['pay'],job_link=data['link'],job_type=data['job_type'],notes=data['notes'],status=data['status'],date=date.fromisoformat(data['date']) if data['date'] else None)
+    pay = float(str(data['pay']).replace(',', '')) if data.get('pay') else None
+    new_application = Application(id=uidcode,userid=uid,company=data['company'],title=data['title'],location=data['location'],pay=pay,job_link=data['link'],job_type=data['job_type'],notes=data['notes'],status=data['status'],date=date.fromisoformat(data['date']) if data['date'] else None)
     db.session.add(new_application)
     db.session.commit()
     return jsonify(new_application.to_dict()),201
@@ -44,7 +45,8 @@ def edit_application(uid, id):
     application.company = data.get('company', application.company)
     application.title = data.get('title', application.title)
     application.location = data.get('location', application.location)
-    application.pay = data.get('pay', application.pay)
+    raw_pay = data.get('pay')
+    application.pay = float(str(raw_pay).replace(',', '')) if raw_pay else application.pay
     application.job_link = data.get('job_link', application.job_link)
     application.job_type = data.get('job_type', application.job_type)
     application.notes = data.get('notes', application.notes)
